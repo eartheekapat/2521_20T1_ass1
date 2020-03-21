@@ -24,3 +24,7 @@ https://stackoverflow.com/questions/3463426/in-c-how-should-i-read-a-text-file-a
 
 strlwr & strupr in C
 https://www.programmingsimplified.com/c/program/c-program-change-case
+
+isalpha in C
+https://www.programiz.com/c-programming/library-function/ctype.h/isalpha
+

@@ -1,0 +1,14 @@
+normaliseWord : can't use ispunct cause focus only 4 punctuations which are 
+'.' (dot),
+',' (comma),
+';' (semicolon),
+'?' (question mark)
+remove the following punctuation marks, ***if they appear at the end of a word***.
+
+//loop through string e.g. str[10] = .Net and modify it
+
+  for (int i = 0; i < strlen(str); i++) {
+    if ((str[i] == '.' || str[i] == ',' || str[i] == ';' || str[i] == '.') && str[i+1] == NULL) {
+      str[i] == ' ';
+    }
+  }

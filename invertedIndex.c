@@ -10,16 +10,14 @@ char *toLow(char *str);
 
 int main () {
     FILE *fp;
-    char str[MAXCHAR];
-    char* filename = "collection.txt";
-    fp = fopen (filename, "r");
+    fp = fopen (collectionFilename, "r");
     if (fp == NULL) {
         printf("Could not open file %s",filename);
         return 1;
     }
     while (fscanf(fp, "%s", str)!=EOF) {
         fp = fopen (str, "r");
-        while (fgets(str, MAXCHAR, fp) != NULL)
+        while (fscanf(fp, "%s", str) != NULL)
         printf("%s\n", normaliseWord(str));
         fclose(fp);
     }
@@ -28,22 +26,20 @@ int main () {
 }
 
 char *normaliseWord(char *str) {
-    int i = 0;
-    int p = 0;
     int len = strlen(str);
-    for (i = 0; i < len; i++) {
-        if (!ispunct(str[i]) && !isspace(str[i])) {
-            str[p] = tolower(str[i]);
-            p++;
+    for (int i = 0; i < len+1; i++) {
+        // check if str[i] is the 4 punc and is at the end of the word
+        if ((str[i] == '.' || str[i] == ',' || str[i] == ';' || str[i] == '?')
+        && i == len - 1) 
+        {
+            str[i] = ' ';
         }
     }
-    for (i = p+1; i < len; i++) {
-        str[i] = ' ';
-    }
-    return str;
+    return toLow(str);
 }
 
-// converting all characters to lowercase code from https://codeforwin.org/2015/04/c-program-convert-upper-case-string-to-lower.html
+//converting all characters to lowercase code from https:
+//codeforwin.org/2015/04/c-program-convert-upper-case-string-to-lower.html
 char *toLow(char *str) {
     for (int i = 0; str[i] != '\0'; i++) {
         if(str[i] >= 'A' && str[i] <= 'Z'){
@@ -53,11 +49,19 @@ char *toLow(char *str) {
     return str;
 }
 
-// remove the following punctuation marks, if they appear at the end of a word
-// char *removePunc(char *str) {
-//     for (int i = 0; str[i] != '\0'; i++) {
-//         if (ispunct(str[i])) {
+InvertedIndexBST generateInvertedIndex(char *collectionFilename) {
+    FILE *fp;
+    fp = fopen (collectionFilename, "r");
+    if (fp == NULL) {
+        printf("Could not open file %s",filename);
+        return 1;
+    }
+    while (fscanf(fp, "%s", str)!=EOF) {
+        fp = fopen (str, "r");
+        while (fscanf(fp, "%s", str) != NULL)
+        printf("%s\n", normaliseWord(str));
+        fclose(fp);
+    }
+    fclose(fp);
+}
 
-//         }
-//     }
-// }
