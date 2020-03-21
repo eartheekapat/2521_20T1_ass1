@@ -1,0 +1,26 @@
+remove punctuation
+https://stackoverflow.com/questions/1841758/how-to-remove-punctuation-from-a-string-in-c
+
+punctuations in C
+https://www.programiz.com/c-programming/library-function/ctype.h/ispunct
+
+space in C
+https://stackoverflow.com/questions/30033582/what-is-the-symbol-for-whitespace-in-c
+
+tolower in C
+https://codeforwin.org/2015/04/c-program-convert-upper-case-string-to-lower.html
+
+read a line from a file in C
+https://www.programiz.com/c-programming/examples/read-file
+
+file I/O in c
+https://www.tutorialspoint.com/cprogramming/c_file_io.htm
+
+read text from a file (fgets)
+https://www.zentut.com/c-tutorial/c-read-text-file/
+
+read text from a file (fscanf)
+https://stackoverflow.com/questions/3463426/in-c-how-should-i-read-a-text-file-and-print-all-strings
+
+strlwr & strupr in C
+https://www.programmingsimplified.com/c/program/c-program-change-case
