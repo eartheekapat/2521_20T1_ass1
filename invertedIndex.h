@@ -16,7 +16,6 @@ struct InvertedIndexNode {
 	struct FileListNode *fileList;
 	struct InvertedIndexNode *left;
 	struct InvertedIndexNode *right;
-
 };
 typedef struct InvertedIndexNode *InvertedIndexBST;
 
