@@ -24,9 +24,22 @@ char *normaliseWord(char *str) {
         if ((str[i] == '.' || str[i] == ',' || str[i] == ';' || str[i] == '?')
         && i == len - 1) 
         {
-            str[i] = ' ';
+            str[i] = '\0';
         }
     }
+    int index, i;
+    // Set default index 
+    index = -1;
+    //Find last index of non-white space character     
+    i = 0;
+    while(str[i] != '\0') {
+        if(str[i] != ' ' && str[i] != '\t' && str[i] != '\n') {
+            index= i;
+        }
+        i++;
+    }
+    // Mark next character to last non-white space character as NULL
+    str[index + 1] = '\0';
     return toLow(str);
 }
 

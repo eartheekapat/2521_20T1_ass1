@@ -5,7 +5,7 @@
 
 int main () {
 
-    printf("%d\n", strcmp("nasa", "firstNode") == 0);
+    printf("%d\n", strcmp("", "firstNode") == 0);
 
     return 0;
 }
