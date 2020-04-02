@@ -8,43 +8,46 @@
 
 #define MAXCHAR 1000
 
-// create new inverted index node
-InvertedIndexBST newInvertedIndexNode (char *key);
+static InvertedIndexBST newInvertedIndexNode (char *key);
 // create new file list node
 FileList newFileListNode (char *filename);
 // find the right position to insert node2 into the tree
 void compareKeyToInsertRecur (InvertedIndexBST node1, InvertedIndexBST node2);
 // insert filename into the node->fileList in the right order
 void insertFileListNode (InvertedIndexBST node, char *filename);
+char *myStrdup(const char *s1);
 // find the matched key node in the tree and return the node
 InvertedIndexBST findKeyRecur (InvertedIndexBST node, char *str);
+// output a give inverted index tree to a file named invertedIndex.txt
+void printInvertedIndex(InvertedIndexBST tree); 
 // loop through buffer to get nodes in the right order to print to invertedIndex.txt
 void loopThroughArrayNprintii  (char buffer[][MAXCHAR], int nitem, InvertedIndexBST node, FILE *fp);
 // put the whole tree keys into array
 int putTreeIntoArrayRecur (InvertedIndexBST t, char buffer[][MAXCHAR], int nitem);
 // sort array components in the lexicographical order
 void arraySortAscendLexi (char buffer[][MAXCHAR], int i);
-// code for strdup from // code from https://stackoverflow.com/questions/37132549/implementation-of-strdup-in-c-programming
-char *myStrdup(const char *s1);
-// converting all characters to lowercase code from https:
-// codeforwin.org/2015/04/c-program-convert-upper-case-string-to-lower.html
+
+char *normaliseWord(char *str);
 char *toLow(char *str);
 
 int main () {
-    InvertedIndexBST tree = generateInvertedIndex ("collection.txt");
-    printInvertedIndex(tree);
-    return 0;
-}
-
-InvertedIndexBST generateInvertedIndex (char *collectionFilename) {
     FILE *fp1, *fp2;
+    char collectionFilename[MAXCHAR] = "collection.txt";
     char str1[MAXCHAR], str2[MAXCHAR];
     fp1 = fopen (collectionFilename, "r");
-     // declare head to store the value of the first node
+    if (fp1 == NULL) {
+        printf("Could not open file %s",collectionFilename);
+        return 1;
+    }
+    // declare head to store the value of the first node
     InvertedIndexBST head = newInvertedIndexNode("head");
     while (fscanf(fp1, "%s", str1) != EOF) {
         char *newstr1 = myStrdup(str1);
         fp2 = fopen (str1, "r");
+        if (fp2 == NULL) {
+        printf("Could not open file %s", str1);
+        return 1;
+        }
         while (fscanf(fp2, "%s", str2) != EOF) { 
             char *newstr2 = myStrdup(str2);
             if (strcmp(normaliseWord(newstr2), "design") == 0) {}
@@ -58,63 +61,27 @@ InvertedIndexBST generateInvertedIndex (char *collectionFilename) {
                 InvertedIndexBST temp = findKeyRecur (head->right, newstr2);
                 if (temp == NULL) { // if not exist
                     // create new node which has str2 as a key
+                    // if (strcmp(normaliseWord(newstr2), "design") == 0) {
+                    //     printf("%s", newstr1);
+                    // }
                     InvertedIndexBST node = newInvertedIndexNode (normaliseWord(newstr2));
                     node->fileList = newFileListNode (newstr1);
                     // then insert the node into the tree
                     compareKeyToInsertRecur (head->right, node);
                 } else { // if exist
                         // insert into the fileList of the node
-                        insertFileListNode (temp, newstr1);
+                        // if (strcmp(normaliseWord(newstr2), "design") == 0) {
+                        //     printf("%s", newstr1);
+                        // }
+                       insertFileListNode (temp, newstr1);
                 }
             }       
         }
         fclose(fp2);
     }
     fclose(fp1);
-    return head->right;
-}
-
-InvertedIndexBST newInvertedIndexNode (char *key) {
-    InvertedIndexBST node = malloc(sizeof(*node));
-    if (node == NULL) {
-        fprintf(stderr, "Insufficient memory!\n");
-        exit(EXIT_FAILURE);
-    }
-    node->word = key;
-    node->fileList = NULL;
-    node->left = NULL;
-    node->right = NULL;
-    return node;
-}
-
-FileList newFileListNode (char *filename) {
-    FileList node = malloc(sizeof(*node));
-    if (node == NULL) {
-        fprintf(stderr, "Insufficient memory!\n");
-        exit(EXIT_FAILURE);
-    }
-    node->filename = filename;
-    node->tf = 0; 
-    node->next = NULL;
-    return node;
-}
-
-void compareKeyToInsertRecur (InvertedIndexBST node1, InvertedIndexBST node2) {
-    if (strcmp(node1->word, node2->word) < 0) {
-        if (node1->right == NULL) {
-            node1->right = node2;
-        } else {
-            compareKeyToInsertRecur (node1->right, node2);
-        }
-    } else if (strcmp(node1->word, node2->word) > 0) {
-        if (node1->left == NULL) {
-            node1->left = node2;
-        } else {
-            compareKeyToInsertRecur (node1->left, node2);
-        }
-    } else {
-        return free(node2);
-    }
+    printInvertedIndex(head->right);
+    return 0;
 }
 
 void insertFileListNode (InvertedIndexBST node, char *filename) {
@@ -164,6 +131,61 @@ InvertedIndexBST findKeyRecur (InvertedIndexBST node, char *str) {
     return NULL;
 }
 
+void compareKeyToInsertRecur (InvertedIndexBST node1, InvertedIndexBST node2) {
+    if (strcmp(node1->word, node2->word) < 0) {
+        if (node1->right == NULL) {
+            node1->right = node2;
+        } else {
+            compareKeyToInsertRecur (node1->right, node2);
+        }
+    } else if (strcmp(node1->word, node2->word) > 0) {
+        if (node1->left == NULL) {
+            node1->left = node2;
+        } else {
+            compareKeyToInsertRecur (node1->left, node2);
+        }
+    } else {
+        return free(node2);
+    }
+}
+
+static InvertedIndexBST newInvertedIndexNode (char *key) {
+    InvertedIndexBST node = malloc(sizeof(*node));
+    if (node == NULL) {
+        fprintf(stderr, "Insufficient memory!\n");
+        exit(EXIT_FAILURE);
+    }
+    node->word = key;
+    node->fileList = NULL;
+    node->left = NULL;
+    node->right = NULL;
+    return node;
+}
+
+FileList newFileListNode (char *filename) {
+    FileList node = malloc(sizeof(*node));
+    if (node == NULL) {
+        fprintf(stderr, "Insufficient memory!\n");
+        exit(EXIT_FAILURE);
+    }
+    node->filename = filename;
+    node->tf = 0; 
+    node->next = NULL;
+    return node;
+}
+
+void printInvertedIndex (InvertedIndexBST node) {
+    int nitem = 0;
+    char ascendDict [100][MAXCHAR];
+    nitem = putTreeIntoArrayRecur (node, ascendDict, nitem);
+    arraySortAscendLexi (ascendDict, nitem);
+    FILE *fp;
+    char Filename[MAXCHAR] = "invertedIndex.txt";
+    fp = fopen (Filename, "w");
+    loopThroughArrayNprintii (ascendDict, nitem, node, fp);
+    return;
+}
+
 void loopThroughArrayNprintii (char buffer[][MAXCHAR], int nitem, InvertedIndexBST node, FILE *fp) {
     if (node == NULL) {
         return;
@@ -210,7 +232,7 @@ void arraySortAscendLexi (char buffer[][MAXCHAR], int i) {
         }
 }
 
-char *normaliseWord(char *str) {
+char *normaliseWord(char *str) {\
     //remove leading & trailing space 
     // https://codeforwin.org/2016/04/c-program-to-trim-both-leading-and-trailing-white-spaces-in-string.html
     int index, i;
@@ -262,12 +284,9 @@ char *toLow(char *str) {
 char *myStrdup(const char *s1) {
   char *str;
   size_t size = strlen(s1) + 1;
-
   str = malloc(size);
   if (str) {
     memcpy(str, s1, size);
   }
   return str;
 }
-
-

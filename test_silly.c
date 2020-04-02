@@ -5,7 +5,7 @@
 
 int main () {
 
-    printf("%d\n", strcmp("", "firstNode") == 0);
+    printf("%d\n", strcmp("robot", "promise"));
 
     return 0;
 }
